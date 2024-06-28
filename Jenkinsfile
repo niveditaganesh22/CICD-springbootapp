@@ -1,10 +1,10 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven-Jenkins' // Ensure this matches your Maven installation name in Jenkins
+        maven 'Maven-Jenkins' 
     }
     environment {
-        SCANNER_HOME = tool 'sonar-scanner' // Ensure this matches your Sonar Scanner tool name in Jenkins
+        SCANNER_HOME = tool 'sonar-scanner' 
     }
     stages {
         stage('Git checkout') {
@@ -27,7 +27,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarCloud') { // Ensure this matches your SonarQube server configuration name in Jenkins
+                    withSonarQubeEnv('SonarCloud') { 
                         sh '''
                             $SCANNER_HOME/bin/sonar-scanner \
                             -Dsonar.projectName=CICD-springbootapp \
@@ -37,13 +37,12 @@ pipeline {
                 }
             }
         }
-        // Uncomment and configure this stage if you need to wait for the SonarQube Quality Gate status
-        // stage('Quality Gate') {
-        //     steps {
-        //         script {
-        //             waitForQualityGate abortPipeline: false, credentialsId: 'sonar' // Ensure this matches your credentials ID for SonarQube
-        //         }
-        //     }
-        // }
+        stage('Quality Gate') {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar' 
+                }
+            }
+        }
     }
 }
