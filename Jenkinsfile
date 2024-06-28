@@ -27,12 +27,19 @@ pipeline{
         stage('SonarQube Analysis') {
             steps {
                script {
-                withSonarQubeEnv('SonarCloud') {
+                withSonarQubeEnv('sonar-server') {
                 sh ''' $SCANNER_HOME/bin/Sonar-Scanner -Dsonar.projectName=CICD-springbootapp -Dsonar.projectKey=niveditaganesh22_CICD-springbootapp '''
                 }
                }
             }
         }
+    //     stage ('Quality Gate'){
+    //         steps {
+    //            script {
+    //             waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
+    //         }
+    //     }
+    //   }
         
 
 
