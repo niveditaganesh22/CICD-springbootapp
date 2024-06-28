@@ -4,7 +4,7 @@ pipeline{
         maven Maven-Jenkins
     }
     environment {
-        SCANNER_HOME= tool 'Sonar-Scanner'
+        SCANNER_HOME= tool 'sonar-scanner'
     }
     stages{
         stage('Git checkout'){
@@ -27,8 +27,8 @@ pipeline{
         stage('SonarQube Analysis') {
             steps {
                script {
-                withSonarQubeEnv('sonar-server') {
-                sh ''' $SCANNER_HOME/bin/Sonar-Scanner -Dsonar.projectName=CICD-springbootapp -Dsonar.projectKey=niveditaganesh22_CICD-springbootapp '''
+                withSonarQubeEnv('SonarCloud') {
+                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=CICD-springbootapp -Dsonar.projectKey=niveditaganesh22_CICD-springbootapp '''
                 }
                }
             }
