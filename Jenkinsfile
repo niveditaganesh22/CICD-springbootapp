@@ -72,7 +72,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t myrepo .'
+                    sh 'docker build -t codec123 .'
                 }
             }
         }
