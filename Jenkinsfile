@@ -1,4 +1,4 @@
-def registry  ='https://cicdspringbootapp.jfrog.io'
+def registry = 'https://cicdspringbootapp.jfrog.io'
 pipeline {
     agent any
     tools {
@@ -55,7 +55,7 @@ pipeline {
                         "files": [
                             {
                                 "pattern": "target/springbootApp.jar",
-                                "target": "cicd-springboot-app-libs-release",
+                                "target": "cicd-springboot-app-libs-release/",
                                 "flat": "false",
                                 "props": "${properties}",
                                 "exclusions": [ "*.sha1", "*.md5" ]
@@ -66,6 +66,22 @@ pipeline {
                     buildInfo.env.collect()
                     server.publishBuildInfo(buildInfo)
                     echo '<--------------- Jar Publish Ended --------------->'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t myrepo .'
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh 'aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 471112580260.dkr.ecr.eu-north-1.amazonaws.com'
+                    sh 'docker tag codec123:latest 471112580260.dkr.ecr.eu-north-1.amazonaws.com/codec123:latest'
+                    sh 'docker push 471112580260.dkr.ecr.eu-north-1.amazonaws.com/codec123:latest'
                 }
             }
         }
