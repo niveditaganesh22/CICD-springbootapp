@@ -2,10 +2,10 @@ def registry = 'https://cicdspringbootapp.jfrog.io'
 pipeline {
     agent any
     tools {
-        maven 'Maven-Jenkins' 
+        maven 'Maven-Jenkins'
     }
     environment {
-        SCANNER_HOME = tool 'sonar-scanner' 
+        SCANNER_HOME = tool 'sonar-scanner'
     }
     stages {
         stage('Git checkout') {
@@ -28,7 +28,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarCloud') { 
+                    withSonarQubeEnv('SonarCloud') {
                         sh '''
                             $SCANNER_HOME/bin/sonar-scanner \
                             -Dsonar.projectName=CICD-springbootapp \
@@ -41,7 +41,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
                 }
             }
         }
@@ -82,6 +82,13 @@ pipeline {
                     sh 'aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 471112580260.dkr.ecr.eu-north-1.amazonaws.com'
                     sh 'docker tag codec123:latest 471112580260.dkr.ecr.eu-north-1.amazonaws.com/codec123:latest'
                     sh 'docker push 471112580260.dkr.ecr.eu-north-1.amazonaws.com/codec123:latest'
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    sh 'kubectl apply -f eks-deploy-k8s.yaml'
                 }
             }
         }
